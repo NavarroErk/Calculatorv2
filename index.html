@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator v2</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Calculator</h1>
+    </header>
+    <section class="content">
+      <div class="calcContainer">
+        <div class="inactiveTextbox"></div>
+        <div class="activeTextbox"></div>
+        <div class="calcGrid">
+          <div class="calcRow1">
+            <button
+              class="row1btn calcBtn operatorColor"
+              id="clearBtn"
+              onclick="clearBtnClicked()"
+            >
+              C
+            </button>
+            <button
+              class="row1btn calcBtn operatorColor"
+              onclick="negativeClicked()"
+            >
+              +/-
+            </button>
+            <button
+              class="row1btn calcBtn operatorColor"
+              onclick="backspaceClicked()"
+            >
+              ←
+            </button>
+            <button class="row1btn calcBtn operatorColor operatorBtn" value="/">
+              /
+            </button>
+          </div>
+          <div class="calcRow2">
+            <div class="calcRow2">
+              <button class="row2btn calcBtn calcNumBtn" value="7">7</button>
+              <button class="row2btn calcBtn calcNumBtn" value="8">8</button>
+              <button class="row2btn calcBtn calcNumBtn" value="9">9</button>
+              <button
+                class="row2btn calcBtn operatorColor operatorBtn"
+                value="x"
+              >
+                x
+              </button>
+            </div>
+          </div>
+          <div class="calcRow3">
+            <div class="calcRow3">
+              <button class="row3btn calcBtn calcNumBtn" value="4">4</button>
+              <button class="row3btn calcBtn calcNumBtn" value="5">5</button>
+              <button class="row3btn calcBtn calcNumBtn" value="6">6</button>
+              <button
+                class="row3btn calcBtn operatorColor operatorBtn"
+                value="-"
+              >
+                -
+              </button>
+            </div>
+          </div>
+          <div class="calcRow4">
+            <div class="calcRow4">
+              <button class="row4btn calcBtn calcNumBtn" value="1">1</button>
+              <button class="row4btn calcBtn calcNumBtn" value="2">2</button>
+              <button class="row4btn calcBtn calcNumBtn" value="3">3</button>
+              <button
+                class="row4btn calcBtn operatorColor operatorBtn"
+                value="+"
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <div class="calcRow5">
+            <div class="calcRow5">
+              <button class="row5btn calcBtn calcNumBtn" value="0">0</button>
+              <button class="row5btn calcBtn">.</button>
+              <button class="row5btn calcBtn equalsBtn">=</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer></footer>
+    <script>
+      let num1;
+      let num2;
+      let operator;
+      let prod;
+      let equalsBtn = document.querySelector(".equalsBtn");
+      let inactiveTextbox = document.querySelector(".inactiveTextbox");
+      let activeTextbox = document.querySelector(".activeTextbox");
+      let numBtnArr = document.querySelectorAll(".calcNumBtn");
+      let opBtnArr = document.querySelectorAll(".operatorBtn");
+
+      function add(a, b) {
+        prod = a + b;
+        updateFinalVal(prod);
+      }
+      function subtract(a, b) {
+        prod = a - b;
+        updateFinalVal(prod);
+      }
+      function multiply(a, b) {
+        prod = a * b;
+        updateFinalVal(prod);
+      }
+      function divide(a, b) {
+        if (b == "0") {
+          activeTextbox.textContent = "ERROR";
+          setTimeout(() => {
+            clearBtnClicked();
+          }, 1500);
+
+          return;
+        }
+        prod = a / b;
+        updateFinalVal(prod);
+      }
+
+      function operate(val1, val2, op) {
+        if (op == "+") {
+          add(val1, val2);
+        } else if (op == "-") {
+          subtract(val1, val2);
+        } else if (op == "x") {
+          multiply(val1, val2);
+        } else if (op == "/") {
+          divide(val1, val2);
+        }
+      }
+
+      function updateFinalVal(val) {
+        activeTextbox.textContent = val;
+      }
+
+      equalsBtn.addEventListener("click", () => {
+        num2 = Number(activeTextbox.textContent);
+        inactiveTextbox.textContent = "";
+        let finalVal = operate(num1, num2, operator);
+        console.log(
+          `num1: ${Number.isInteger(num1)} num2: ${Number.isInteger(
+            num2
+          )} operator: ${operator}`
+        );
+        // activeTextbox.textContent = finalVal;
+      });
+
+      function operatorClicked(val1) {
+        num1 = Number(val1);
+        console.log(`num1 = ${num1}`);
+      }
+
+      function clearBtnClicked() {
+        inactiveTextbox.textContent = "";
+        activeTextbox.textContent = "";
+        num1 = null;
+        num2 = null;
+      }
+
+      numBtnArr.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (activeTextbox.textContent == 0) {
+            activeTextbox.textContent = "";
+            activeTextbox.textContent += btn.value;
+          } else {
+            activeTextbox.textContent += btn.value;
+            console.log(activeTextbox);
+          }
+        });
+      });
+
+      opBtnArr.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          operator = btn.value;
+          inactiveTextbox.textContent = activeTextbox.textContent;
+          activeTextbox.textContent = "";
+          operatorClicked(inactiveTextbox.textContent);
+        });
+      });
+
+      function backspaceClicked() {
+        let str = activeTextbox.textContent;
+        str = str.slice(0, -1);
+        Number(str);
+        activeTextbox.textContent = str;
+      }
+
+      function negativeClicked() {
+        let tempNum = Number(activeTextbox.textContent);
+        activeTextbox.textContent = tempNum * -1;
+      }
+    </script>
+  </body>
+</html>
